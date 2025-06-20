@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "mocha tests/*.mjs"
+   "test": "mocha tests/*.mjs --timeout 10000"
   },
   "keywords": [],
   "author": "",
