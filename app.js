@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { sequelize } from './models/index.js';
 import authRoutes from './routes/authRoutes.js';
+import protectedRoutes from './routes/protectedRoutes.js';
+
 
 dotenv.config();
 
@@ -10,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
+app.use('/api/protected', protectedRoutes);
 
 app.get('/', (req, res) => res.send('BookWise API Running'));
 
