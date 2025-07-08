@@ -4,7 +4,7 @@ import { authenticateToken, authorizeRole } from '../middleware/authMiddleware.j
 
 const router = express.Router();
 
-// GET /api/protected/admin/dashboard
+// GET /api/protected/admin/dashboard.
 router.get('/admin/dashboard', authenticateToken, authorizeRole('admin'), adminDashboard);
 
 export default router;
