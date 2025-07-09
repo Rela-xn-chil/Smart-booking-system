@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 import UserModel from './user.js';
+import ServiceModel from './service.js';
+import BookingModel from './booking.js'; // ✅
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,12 +22,16 @@ const sequelize = new Sequelize(
 );
 
 const User = UserModel(sequelize, Sequelize.DataTypes);
+const Service = ServiceModel(sequelize, Sequelize.DataTypes);
+const Booking = BookingModel(sequelize, Sequelize.DataTypes); // ✅
 
 const db = {
   sequelize,
   Sequelize,
-  User
+  User,
+  Service,
+  Booking // ✅
 };
 
-export { sequelize, Sequelize, User };
+export { sequelize, Sequelize, User, Service, Booking }; // optional
 export default db;

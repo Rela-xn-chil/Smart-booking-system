@@ -4,16 +4,20 @@ import { sequelize } from './models/index.js';
 import authRoutes from './routes/authRoutes.js';
 import protectedRoutes from './routes/protectedRoutes.js';
 import cors from 'cors';
+import serviceRoutes from './routes/serviceRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
+app.use('/api', bookingRoutes);
+app.use('/api', serviceRoutes);
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/protected', protectedRoutes);
-app.use(cors());
 app.get('/', (req, res) => res.send('BookWise API Running'));
 
 // DB connection
