@@ -1,11 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { sequelize } from './models/index.js';
-import authRoutes from './routes/authRoutes.js';
 import protectedRoutes from './routes/protectedRoutes.js';
 import cors from 'cors';
 import serviceRoutes from './routes/serviceRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -13,12 +14,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use('/api', bookingRoutes);
 app.use('/api', serviceRoutes);
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/protected', protectedRoutes);
 app.get('/', (req, res) => res.send('BookWise API Running'));
+app.use('/api', bookingRoutes);
+app.use('/api', userRoutes);
+app.use('/api', authRoutes); 
 
 // DB connection
 sequelize.authenticate()
