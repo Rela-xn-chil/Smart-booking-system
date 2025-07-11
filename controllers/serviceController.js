@@ -4,6 +4,7 @@ const Service = db.Service;
 
 export const createService = async (req, res) => {
   try {
+    console.log(req.body); // ✅ ADD THIS
     const newService = await Service.create(req.body);
     res.status(201).json(newService);
   } catch (err) {

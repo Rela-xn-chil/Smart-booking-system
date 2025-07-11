@@ -25,6 +25,12 @@ const User = UserModel(sequelize, Sequelize.DataTypes);
 const Service = ServiceModel(sequelize, Sequelize.DataTypes);
 const Booking = BookingModel(sequelize, Sequelize.DataTypes); // ✅
 
+// Define associations
+User.hasMany(Booking, { foreignKey: 'userId' });
+Service.hasMany(Booking, { foreignKey: 'serviceId' });
+Booking.belongsTo(User, { foreignKey: 'userId' });
+Booking.belongsTo(Service, { foreignKey: 'serviceId' });
+
 const db = {
   sequelize,
   Sequelize,

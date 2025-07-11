@@ -16,7 +16,12 @@ export const createBooking = async (req, res) => {
 
 export const getBookings = async (req, res) => {
   try {
-    const bookings = await Booking.findAll();
+    const bookings = await Booking.findAll({
+      include: [
+        { model: db.User, attributes: ['id', 'name', 'email'] },
+        { model: db.Service, attributes: ['id', 'name', 'category', 'price'] }
+      ]
+    });
     res.status(200).json(bookings);
   } catch (err) {
     res.status(500).json({ error: err.message });

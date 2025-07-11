@@ -40,3 +40,12 @@
 .read-the-docs {
   color: #888;
 }
+
+input,
+label,
+select,
+button {
+  color: #000; /* black text */
+  background-color: #fff; /* white background (optional) */
+}
+
