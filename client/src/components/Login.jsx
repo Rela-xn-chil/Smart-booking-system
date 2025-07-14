@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
+export default function Login({ onLogin }) {
   const [form, setForm] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,11 +20,12 @@ export default function Login() {
       });
 
       const data = await res.json();
-      console.log(data);
-
       if (res.ok) {
         alert('Logged in!');
-        localStorage.setItem('token', data.token); // store token for auth routes
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.user?.id || data.userId);
+        onLogin(); // ✅ tell App.jsx we're logged in
+        navigate('/my-bookings');
       } else {
         alert(data.error || 'Login failed');
       }
