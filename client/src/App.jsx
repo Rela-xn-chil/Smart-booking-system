@@ -7,6 +7,8 @@ import ServiceList from './components/ServiceList';
 import BookService from './components/BookService';
 import BookingList from './components/BookingList';
 import AddBooking from './components/AddBooking';
+import UserBookings from './components/UserBookings';
+
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
         <Route path="/book-service" element={<BookService />} />
         <Route path="/bookings" element={<BookingList />} />
         <Route path="/add-booking" element={<AddBooking />} />
+        <Route path="/my-bookings" element={<UserBookings userId={2} />} />
       </Routes>
     </div>
   );

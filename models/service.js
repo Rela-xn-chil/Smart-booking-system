@@ -3,7 +3,7 @@ import { Model } from 'sequelize';
 export default (sequelize, DataTypes) => {
   class Service extends Model {
     static associate(models) {
-      // define associations here later if needed
+      // Optional for now
     }
   }
 
@@ -13,11 +13,12 @@ export default (sequelize, DataTypes) => {
       description: DataTypes.STRING,
       category: DataTypes.STRING,
       price: DataTypes.FLOAT,
-      availableSlots: DataTypes.INTEGER,
+      availableSlots: DataTypes.INTEGER
     },
     {
       sequelize,
       modelName: 'Service',
+      tableName: 'Services' // ✅ Ensures correct table name
     }
   );
 

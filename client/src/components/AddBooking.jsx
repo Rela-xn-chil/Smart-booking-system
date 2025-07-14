@@ -54,11 +54,13 @@ function AddBooking() {
         <div>
           <label>Service:</label>
           <select value={serviceId} onChange={(e) => setServiceId(e.target.value)} required>
-            <option value="">Select Service</option>
-            {services.map(service => (
-              <option key={service.id} value={service.id}>{service.name}</option>
-            ))}
-          </select>
+  <option value="">Select a service</option>
+  {services.map(service => (
+    <option key={service.id} value={service.id}>
+      {service.name}
+    </option>
+  ))}
+</select>
         </div>
         <div>
           <label>Date:</label>

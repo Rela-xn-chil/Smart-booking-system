@@ -27,3 +27,18 @@ export const getBookings = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getBookingsByUser = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const bookings = await Booking.findAll({
+      where: { userId },
+      include: [
+        { model: db.Service, attributes: ['name', 'category', 'price'] }
+      ]
+    });
+    res.status(200).json(bookings);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
