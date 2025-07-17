@@ -8,6 +8,8 @@ const AddService = () => {
     price: '',
     availableSlots: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value});
@@ -15,6 +17,8 @@ const AddService = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage('');
 
     try {
       const res = await fetch('http://localhost:3000/api/services', {
@@ -24,23 +28,125 @@ const AddService = () => {
       });
 
       const data = await res.json();
-      console.log(data);
-      alert("Service added successfully!");
+      
+      if (res.ok) {
+        setMessage('Service added successfully!');
+        setFormData({
+          name: '',
+          description: '',
+          category: '',
+          price: '',
+          availableSlots: ''
+        });
+      } else {
+        setMessage(data.error || 'Error adding service');
+      }
     } catch (err) {
       console.error(err);
-      alert("Error adding service");
+      setMessage('Network error. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="name" placeholder="Name" onChange={handleChange} required />
-      <input name="description" placeholder="Description" onChange={handleChange} required />
-      <input name="category" placeholder="Category" onChange={handleChange} required />
-      <input name="price" type="number" placeholder="Price" onChange={handleChange} required />
-      <input name="availableSlots" type="number" placeholder="Available Slots" onChange={handleChange} required />
-      <button type="submit">Add Service</button>
-    </form>
+    <div className="card">
+      <h2>Add New Service</h2>
+      <p style={{ textAlign: 'center', marginBottom: '2rem', color: '#666' }}>
+        Create a new service for customers to book
+      </p>
+      
+      <div className="form-container">
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Service Name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Enter service name"
+              value={formData.name}
+              onChange={handleChange}
+              className="form-input"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="description">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Describe your service"
+              value={formData.description}
+              onChange={handleChange}
+              className="form-input"
+              rows="4"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="category">Category</label>
+            <input
+              id="category"
+              name="category"
+              type="text"
+              placeholder="e.g., Health, Education, Business"
+              value={formData.category}
+              onChange={handleChange}
+              className="form-input"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="price">Price ($)</label>
+            <input
+              id="price"
+              name="price"
+              type="number"
+              placeholder="0.00"
+              value={formData.price}
+              onChange={handleChange}
+              className="form-input"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="availableSlots">Available Slots</label>
+            <input
+              id="availableSlots"
+              name="availableSlots"
+              type="number"
+              placeholder="Number of available slots"
+              value={formData.availableSlots}
+              onChange={handleChange}
+              className="form-input"
+              min="1"
+              required
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="btn"
+            disabled={loading}
+          >
+            {loading ? 'Adding Service...' : 'Add Service'}
+          </button>
+        </form>
+
+        {message && (
+          <div className={`message ${message.includes('successfully') ? 'success' : 'error'}`}>
+            {message}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
