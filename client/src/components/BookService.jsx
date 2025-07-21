@@ -82,7 +82,7 @@ const BookService = () => {
               <option value="">Choose a service...</option>
               {services.map(service => (
                 <option key={service.id} value={service.id}>
-                  {service.name} - ${service.price} ({service.availableSlots} slots available)
+                  {service.name} ({service.availableSlots} slots available)
                 </option>
               ))}
             </select>
@@ -100,7 +100,6 @@ const BookService = () => {
               <p style={{ margin: '0 0 0.5rem 0', color: '#666' }}>{selectedService.description}</p>
               <div style={{ display: 'flex', gap: '1rem', fontSize: '0.9rem' }}>
                 <span><strong>Category:</strong> {selectedService.category}</span>
-                <span><strong>Price:</strong> ${selectedService.price}</span>
                 <span><strong>Available Slots:</strong> {selectedService.availableSlots}</span>
               </div>
             </div>

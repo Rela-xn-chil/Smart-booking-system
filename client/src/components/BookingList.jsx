@@ -116,11 +116,6 @@ function BookingList() {
                 <span>
                   <strong>🕒 Time:</strong> {new Date(booking.date).toLocaleTimeString()}
                 </span>
-                {booking.Service?.price && (
-                  <span>
-                    <strong>💰 Price:</strong> ${booking.Service.price}
-                  </span>
-                )}
               </div>
             </div>
           ))}

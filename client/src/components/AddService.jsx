@@ -15,39 +15,45 @@ const AddService = () => {
     setFormData({...formData, [e.target.name]: e.target.value});
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setMessage('');
 
-    try {
-      const res = await fetch('http://localhost:3000/api/services', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await res.json();
-      
-      if (res.ok) {
-        setMessage('Service added successfully!');
-        setFormData({
-          name: '',
-          description: '',
-          category: '',
-          price: '',
-          availableSlots: ''
-        });
-      } else {
-        setMessage(data.error || 'Error adding service');
-      }
-    } catch (err) {
-      console.error(err);
-      setMessage('Network error. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+  // Convert numeric fields
+  const payload = {
+    ...formData,
+    price: parseFloat(formData.price),
+    availableSlots: parseInt(formData.availableSlots),
   };
+
+  try {
+    const res = await fetch('http://localhost:3000/api/services', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setMessage('Service added successfully!');
+      setFormData({
+        name: '',
+        description: '',
+        category: '',
+        availableSlots: ''
+      });
+    } else {
+      setMessage(data.error || 'Error adding service');
+    }
+  } catch (err) {
+    console.error(err);
+    setMessage('Network error. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="card">
@@ -96,22 +102,6 @@ const AddService = () => {
               value={formData.category}
               onChange={handleChange}
               className="form-input"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="price">Price ($)</label>
-            <input
-              id="price"
-              name="price"
-              type="number"
-              placeholder="0.00"
-              value={formData.price}
-              onChange={handleChange}
-              className="form-input"
-              min="0"
-              step="0.01"
               required
             />
           </div>

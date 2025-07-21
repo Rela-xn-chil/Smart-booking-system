@@ -1,128 +1,76 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
-function UserBookings({ userId }) {
+export default function UserBookings({ userId }) {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!userId) return;
+    const fetchUserBookings = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:3000/api/bookings/user/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
 
-    fetch(`http://localhost:3000/api/bookings/user/${userId}`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setBookings(data);
-        } else {
-          setError('Invalid response from server');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      })
-      .catch(err => {
-        console.error(err);
-        setError('Failed to fetch bookings');
-      })
-      .finally(() => setLoading(false));
+
+        const data = await response.json();
+        setBookings(data);
+      } catch (err) {
+        console.error('Error fetching user bookings:', err);
+        setError('Failed to load your bookings');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchUserBookings();
+    }
   }, [userId]);
 
-  if (!userId) {
-    return (
-      <div className="card">
-        <div className="message error">No user logged in.</div>
-      </div>
-    );
-  }
-
   if (loading) {
-    return (
-      <div className="card">
-        <div className="loading">Loading your bookings...</div>
-      </div>
-    );
+    return <div className="loading">Loading your bookings...</div>;
   }
 
   if (error) {
+    return <div className="error">{error}</div>;
+  }
+
+  if (bookings.length === 0) {
     return (
       <div className="card">
-        <div className="message error">{error}</div>
+        <h2>My Bookings</h2>
+        <p>You haven't made any bookings yet.</p>
       </div>
     );
   }
 
   return (
     <div className="card">
-      <h2>Your Bookings</h2>
-      <p style={{ textAlign: 'center', marginBottom: '2rem', color: '#666' }}>
-        View and manage your service bookings
-      </p>
-
-      {bookings.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-state-icon">📅</div>
-          <h3>No bookings yet</h3>
-          <p>You haven't made any bookings yet. Start by browsing available services!</p>
-          <div style={{ marginTop: '1rem' }}>
-            <a href="/services" style={{ 
-              color: '#667eea', 
-              textDecoration: 'none', 
-              fontWeight: '500' 
-            }}>
-              Browse Services →
-            </a>
-          </div>
-        </div>
-      ) : (
-        <div className="list-container">
-          {bookings.map(booking => (
-            <div key={booking.id} className="list-item booking-item">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                <h3 style={{ margin: 0, color: '#333', fontSize: '1.3rem' }}>
-                  {booking.Service?.name || 'Unknown Service'}
-                </h3>
-                <span style={{ 
-                  background: '#17a2b8', 
-                  color: 'white', 
-                  padding: '0.25rem 0.75rem', 
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold'
-                }}>
-                  Booked
-                </span>
-              </div>
-              
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '1rem',
-                color: '#666',
-                fontSize: '0.95rem'
-              }}>
-                <span>
-                  <strong>📅 Date:</strong> {new Date(booking.date).toLocaleDateString()}
-                </span>
-                <span>
-                  <strong>🕒 Time:</strong> {new Date(booking.date).toLocaleTimeString()}
-                </span>
-              </div>
-              
-              {booking.Service?.description && (
-                <p style={{ 
-                  color: '#666', 
-                  marginTop: '1rem',
-                  padding: '0.75rem',
-                  background: '#f8f9fa',
-                  borderRadius: '8px',
-                  fontSize: '0.9rem'
-                }}>
-                  {booking.Service.description}
-                </p>
-              )}
+      <h2>My Bookings</h2>
+      <div className="bookings-list">
+        {bookings.map((booking) => (
+          <div key={booking.id} className="booking-item">
+            <div className="booking-details">
+              <h3>{booking.Service?.name || 'Service Name Not Available'}</h3>
+              <p><strong>Date:</strong> {new Date(booking.date).toLocaleDateString()}</p>
+              <p><strong>Description:</strong> {booking.Service?.description || 'N/A'}</p>
+              <p><strong>Category:</strong> {booking.Service?.category || 'N/A'}</p>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
-
-export default UserBookings;

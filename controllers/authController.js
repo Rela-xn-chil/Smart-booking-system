@@ -46,7 +46,12 @@ export const login = async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    res.status(200).json({ message: 'Login successful', token });
+    // ✅ FIXED: Return userId along with token
+    res.status(200).json({ 
+      message: 'Login successful', 
+      token,
+      userId: user.id // Add this line
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -62,4 +67,3 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-

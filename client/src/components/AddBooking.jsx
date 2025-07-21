@@ -92,7 +92,7 @@ function AddBooking() {
               <option value="">Choose a service...</option>
               {services.map(service => (
                 <option key={service.id} value={service.id}>
-                  {service.name} - ${service.price} ({service.availableSlots} slots available)
+                  {service.name} -({service.availableSlots} slots available)
                 </option>
               ))}
             </select>

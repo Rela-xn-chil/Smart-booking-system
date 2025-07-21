@@ -62,7 +62,7 @@ const ServiceList = () => {
                   fontSize: '0.9rem',
                   fontWeight: 'bold'
                 }}>
-                  ${service.price}
+                  Space Available: {service.price}
                 </span>
               </div>
               
