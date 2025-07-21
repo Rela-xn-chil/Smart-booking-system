@@ -18,13 +18,24 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const id = localStorage.getItem('userId');
-    if (token) {
+    if (token && id) {
       setIsLoggedIn(true);
-      setUserId(id);
+      setUserId(parseInt(id)); // ✅ Parse userId as integer
     } else {
       setIsLoggedIn(false);
+      setUserId(null);
     }
   }, []);
+
+  // ✅ Updated handleLogin to also set userId when login is successful
+  const handleLogin = () => {
+    const token = localStorage.getItem('token');
+    const id = localStorage.getItem('userId');
+    if (token && id) {
+      setIsLoggedIn(true);
+      setUserId(parseInt(id));
+    }
+  };
 
   const handleLogout = () => {
     localStorage.clear();
@@ -76,7 +87,7 @@ function App() {
         <Routes>
           {!isLoggedIn ? (
             <>
-              <Route path="/login" element={<Login onLogin={() => setIsLoggedIn(true)} />} />
+              <Route path="/login" element={<Login onLogin={handleLogin} />} />
               <Route path="/register" element={<Register />} />
               <Route path="*" element={<Navigate to="/login" />} />
             </>
@@ -89,7 +100,7 @@ function App() {
               <Route path="/add-booking" element={<AddBooking />} />
               <Route
                 path="/my-bookings"
-                element={userId ? <UserBookings userId={userId} /> : <Navigate to="/login" />}
+                element={userId ? <UserBookings userId={userId} /> : <div className="loading">Loading user data...</div>}
               />
               <Route path="*" element={<Navigate to="/my-bookings" />} />
             </>
