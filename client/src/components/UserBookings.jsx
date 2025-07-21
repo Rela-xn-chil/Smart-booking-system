@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function UserBookings({ userId }) {
+export default function UserBookings({ userId }) {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -8,24 +8,26 @@ function UserBookings({ userId }) {
   useEffect(() => {
     const fetchUserBookings = async () => {
       try {
-        console.log('Fetching bookings for userId:', userId); // ✅ Debug log
+        setLoading(true);
+        setError('');
         
-        const response = await fetch(`http://localhost:5000/api/bookings/user/${userId}`, {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:3000/api/bookings/user/${userId}`, {
+          method: 'GET',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch bookings: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Fetched bookings data:', data); // ✅ Debug log
         setBookings(data);
-      } catch (error) {
-        console.error('Error fetching user bookings:', error);
+      } catch (err) {
+        console.error('Error fetching user bookings:', err);
         setError('Failed to load your bookings');
       } finally {
         setLoading(false);
@@ -38,17 +40,18 @@ function UserBookings({ userId }) {
   }, [userId]);
 
   if (loading) {
-    return (
-      <div className="card">
-        <div className="loading">Loading your bookings...</div>
-      </div>
-    );
+    return <div className="loading">Loading your bookings...</div>;
   }
 
   if (error) {
+    return <div className="error">{error}</div>;
+  }
+
+  if (bookings.length === 0) {
     return (
       <div className="card">
-        <div className="message error">{error}</div>
+        <h2>My Bookings</h2>
+        <p>You haven't made any bookings yet.</p>
       </div>
     );
   }
@@ -56,28 +59,18 @@ function UserBookings({ userId }) {
   return (
     <div className="card">
       <h2>My Bookings</h2>
-      
-      {bookings.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-state-icon">📅</div>
-          <h3>No bookings yet</h3>
-          <p>You haven't made any bookings yet. Browse our services and book your first appointment!</p>
-        </div>
-      ) : (
-        <div className="list-container">
-          {bookings.map((booking) => (
-            <div key={booking.id} className="list-item booking-item">
-              <strong>Service: {booking.Service?.name || 'Unknown Service'}</strong>
-              <p>Category: {booking.Service?.category || 'N/A'}</p>
-              <p>Price: ${booking.Service?.price || 'N/A'}</p>
-              <p>Date: {new Date(booking.date).toLocaleDateString()}</p>
-              <p>Booking ID: #{booking.id}</p>
+      <div className="bookings-list">
+        {bookings.map((booking) => (
+          <div key={booking.id} className="booking-item">
+            <div className="booking-details">
+              <h3>{booking.Service?.name || 'Service Name Not Available'}</h3>
+              <p><strong>Date:</strong> {new Date(booking.date).toLocaleDateString()}</p>
+              <p><strong>Description:</strong> {booking.Service?.description || 'N/A'}</p>
+              <p><strong>Category:</strong> {booking.Service?.category || 'N/A'}</p>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
-
-export default UserBookings;
