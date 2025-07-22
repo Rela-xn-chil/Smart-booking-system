@@ -18,7 +18,7 @@ const BookService = () => {
     }
 
     // Fetch available services
-    fetch('http://localhost:3000/api/services')
+    fetch('https://smart-booking-system-backend.onrender.com')
       .then(res => res.json())
       .then(data => setServices(data))
       .catch(err => console.error('Error fetching services:', err));
@@ -34,7 +34,7 @@ const BookService = () => {
     setMessage('');
 
     try {
-      const res = await fetch('http://localhost:3000/api/bookings', {
+      const res = await fetch('https://smart-booking-system-backend.onrender.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

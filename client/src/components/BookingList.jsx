@@ -6,7 +6,7 @@ function BookingList() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/bookings')
+    fetch('https://smart-booking-system-backend.onrender.com')
       .then((res) => res.json())
       .then((data) => {
         setBookings(data);

@@ -11,13 +11,13 @@ function AddBooking() {
 
   useEffect(() => {
     // Fetch users
-    fetch('http://localhost:3000/api/users')
+    fetch('https://smart-booking-system-backend.onrender.com')
       .then(res => res.json())
       .then(data => setUsers(data))
       .catch(err => console.error('Error fetching users:', err));
 
     // Fetch services
-    fetch('http://localhost:3000/api/services')
+    fetch('https://smart-booking-system-backend.onrender.com')
       .then(res => res.json())
       .then(data => setServices(data))
       .catch(err => console.error('Error fetching services:', err));
@@ -29,7 +29,7 @@ function AddBooking() {
     setMessage('');
 
     try {
-      const res = await fetch('http://localhost:3000/api/bookings', {
+      const res = await fetch('https://smart-booking-system-backend.onrender.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, serviceId, date })

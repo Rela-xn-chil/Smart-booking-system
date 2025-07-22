@@ -6,7 +6,7 @@ const ServiceList = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/services')
+    fetch('https://smart-booking-system-backend.onrender.com')
       .then(res => res.json())
       .then(data => {
         setServices(data);

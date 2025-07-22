@@ -12,7 +12,7 @@ export default function UserBookings({ userId }) {
         setError('');
         
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/bookings/user/${userId}`, {
+        const response = await fetch(`https://smart-booking-system-backend.onrender.com`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

@@ -18,9 +18,9 @@ function Login({ onLogin }) {
     setMessage('');
 
     try {
-      console.log('🔄 Attempting login to: http://localhost:3000/api/auth/login');
+      console.log('🔄 Attempting login to: https://smart-booking-system-backend.onrender.com');
       
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch('https://smart-booking-system-backend.onrender.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ function Login({ onLogin }) {
       
       // More specific error messages
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        setMessage('❌ Cannot connect to server. Make sure the backend is running on http://localhost:3000');
+        setMessage('❌ Cannot connect to server. Make sure the backend is running on https://smart-booking-system-backend.onrender.com');
       } else if (error.name === 'SyntaxError') {
         setMessage('❌ Server returned invalid response. Check server logs.');
       } else {
