@@ -114,22 +114,6 @@ const AddService = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="price">Price</label>
-            <input
-              id="price"
-              name="price"
-              type="number"
-              step="0.01"
-              placeholder="Enter price"
-              value={formData.price}
-              onChange={handleChange}
-              className="form-input"
-              min="0"
-              required
-            />
-          </div>
-
-          <div className="form-group">
             <label htmlFor="availableSlots">Available Slots</label>
             <input
               id="availableSlots"

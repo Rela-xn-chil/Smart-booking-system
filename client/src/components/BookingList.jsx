@@ -113,19 +113,6 @@ function BookingList() {
                       {booking.Service.category}
                     </span>
                   )}
-
-                  {booking.Service?.price && (
-                    <span style={{ 
-                      background: '#ffc107', 
-                      color: '#212529', 
-                      padding: '0.25rem 0.75rem', 
-                      borderRadius: '15px',
-                      fontSize: '0.8rem',
-                      fontWeight: '500'
-                    }}>
-                      ${booking.Service.price}
-                    </span>
-                  )}
                 </div>
               </div>
 
