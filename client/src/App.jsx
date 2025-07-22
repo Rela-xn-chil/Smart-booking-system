@@ -6,7 +6,6 @@ import Login from './components/Login';
 import Register from './components/Register';
 import AddService from './components/AddService';
 import ServiceList from './components/ServiceList';
-import BookService from './components/BookService';
 import BookingList from './components/BookingList';
 import AddBooking from './components/AddBooking';
 import UserBookings from './components/UserBookings';
@@ -63,7 +62,6 @@ function App() {
                 <Link to="/my-bookings">My Bookings</Link>
                 <Link to="/services">View Services</Link>
                 <Link to="/add-service">Add Service</Link>
-                <Link to="/book-service">Book Service</Link>
                 <Link to="/bookings">All Bookings</Link>
                 <Link to="/add-booking">Add Booking</Link>
                 <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -85,7 +83,6 @@ function App() {
             <>
               <Route path="/add-service" element={<AddService />} />
               <Route path="/services" element={<ServiceList />} />
-              <Route path="/book-service" element={<BookService />} />
               <Route path="/bookings" element={<BookingList />} />
               <Route path="/add-booking" element={<AddBooking />} />
               <Route path="/my-bookings" element={userId ? <UserBookings userId={userId} /> : <div className="loading">Loading user data...</div>} />
