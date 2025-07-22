@@ -5,7 +5,7 @@ BookWise is a full-stack web application that allows users to register, log in, 
 ## 🚀 Live Demo
 
 🔗 Frontend: https://bookwise-15uq.onrender.com
-🔗 Backend API: [https://your-backend-url.onrender.com/api](https://your-backend-url.onrender.com/api)
+🔗 Backend API: https://smart-booking-system-backend.onrender.com
 
 ---
 
