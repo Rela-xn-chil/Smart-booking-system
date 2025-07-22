@@ -2,6 +2,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// Import the logo (put the logo in src/assets/ folder for this method)
+// import capacitiLogo from '../assets/capaciti-logo.png';
+
 function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -72,6 +75,48 @@ function Login({ onLogin }) {
 
   return (
     <div className="card">
+      {/* Capaciti Logo - Multiple fallback options */}
+      <div className="login-logo-container">
+        {/* Try public folder method first */}
+        <img 
+          src="/capaciti-logo.png" 
+          alt="Capaciti Logo" 
+          className="login-logo"
+          onError={(e) => {
+            console.log('❌ Logo failed to load from public folder, trying alternatives...');
+            // Try different extensions
+            e.target.src = "/capaciti-logo.jpg";
+            e.target.onerror = () => {
+              e.target.src = "/capaciti-logo.jpeg";
+              e.target.onerror = () => {
+                e.target.src = "/capaciti-logo.svg";
+                e.target.onerror = () => {
+                  // Final fallback - hide image and show text
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                };
+              };
+            };
+          }}
+        />
+        
+        {/* Fallback logo using inline SVG (recreating the Capaciti logo) */}
+        <div className="logo-fallback" style={{display: 'none'}}>
+          <div className="capaciti-logo-svg">
+            <svg width="300" height="80" viewBox="0 0 400 100" style={{margin: '0 auto', display: 'block'}}>
+              {/* Circle with pattern */}
+              <circle cx="40" cy="50" r="35" fill="#3f4a6a" />
+              {/* Stylized arrow/chevron patterns */}
+              <path d="M20 30 L35 45 L20 60 L25 65 L45 45 L25 25 Z" fill="white" />
+              <path d="M40 30 L55 45 L40 60 L45 65 L65 45 L45 25 Z" fill="#ff6b4a" />
+              
+              {/* CAPACITI text */}
+              <text x="100" y="35" fontSize="24" fontWeight="bold" fill="#3f4a6a" fontFamily="Arial, sans-serif">CAPACITI</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
       <h2>Login to BookWise</h2>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
@@ -109,12 +154,6 @@ function Login({ onLogin }) {
         {message && (
           <div className={`message ${message.includes('successful') ? 'success' : 'error'}`}>
             {message}
-          </div>
-        )}
-        
-        {/* Debug info in development */}
-        {process.env.NODE_ENV !== 'production' && (
-          <div style={{ marginTop: '1rem', padding: '1rem', background: '#f0f0f0', borderRadius: '5px', fontSize: '0.8rem' }}>
           </div>
         )}
       </div>
