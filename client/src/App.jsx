@@ -6,7 +6,6 @@ import Login from './components/Login';
 import Register from './components/Register';
 import AddService from './components/AddService';
 import ServiceList from './components/ServiceList';
-import BookService from './components/BookService';
 import BookingList from './components/BookingList';
 import AddBooking from './components/AddBooking';
 import UserBookings from './components/UserBookings';
@@ -20,14 +19,13 @@ function App() {
     const id = localStorage.getItem('userId');
     if (token && id) {
       setIsLoggedIn(true);
-      setUserId(parseInt(id)); // ✅ Parse userId as integer
+      setUserId(parseInt(id));
     } else {
       setIsLoggedIn(false);
       setUserId(null);
     }
   }, []);
 
-  // ✅ Updated handleLogin to also set userId when login is successful
   const handleLogin = () => {
     const token = localStorage.getItem('token');
     const id = localStorage.getItem('userId');
@@ -45,21 +43,14 @@ function App() {
   };
 
   if (isLoggedIn === null) {
-    return (
-      <div className="loading">
-        Loading BookWise...
-      </div>
-    );
+    return <div className="loading">Loading BookWise...</div>;
   }
 
   return (
-    <div className="app-container">
-      <header className="header">
-        <div className="header-content">
-          <Link to="/" className="logo">
-            BookWise
-          </Link>
-
+    <div className="app-layout">
+      <aside className="sidebar">
+        <div className="sidebar-content">
+          <Link to="/" className="logo">BookWise</Link>
           <nav className="nav-links">
             {!isLoggedIn ? (
               <>
@@ -71,17 +62,14 @@ function App() {
                 <Link to="/my-bookings">My Bookings</Link>
                 <Link to="/services">View Services</Link>
                 <Link to="/add-service">Add Service</Link>
-                <Link to="/book-service">Book Service</Link>
                 <Link to="/bookings">All Bookings</Link>
                 <Link to="/add-booking">Add Booking</Link>
-                <button onClick={handleLogout} className="logout-btn">
-                  Logout
-                </button>
+                <button onClick={handleLogout} className="logout-btn">Logout</button>
               </>
             )}
           </nav>
         </div>
-      </header>
+      </aside>
 
       <main className="main-content">
         <Routes>
@@ -95,13 +83,9 @@ function App() {
             <>
               <Route path="/add-service" element={<AddService />} />
               <Route path="/services" element={<ServiceList />} />
-              <Route path="/book-service" element={<BookService />} />
               <Route path="/bookings" element={<BookingList />} />
               <Route path="/add-booking" element={<AddBooking />} />
-              <Route
-                path="/my-bookings"
-                element={userId ? <UserBookings userId={userId} /> : <div className="loading">Loading user data...</div>}
-              />
+              <Route path="/my-bookings" element={userId ? <UserBookings userId={userId} /> : <div className="loading">Loading user data...</div>} />
               <Route path="*" element={<Navigate to="/my-bookings" />} />
             </>
           )}
