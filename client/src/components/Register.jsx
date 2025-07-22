@@ -1,5 +1,7 @@
+// src/components/Register.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -17,7 +19,7 @@ export default function Register() {
     setMessage('');
 
     try {
-      const res = await fetch('https://smart-booking-system-backend.onrender.com', {
+      const res = await fetch(API_ENDPOINTS.REGISTER, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -31,7 +33,7 @@ export default function Register() {
           navigate('/login');
         }, 2000);
       } else {
-        setMessage(data.error || 'Registration failed');
+        setMessage(data.message || data.error || 'Registration failed');
       }
     } catch (err) {
       console.error(err);

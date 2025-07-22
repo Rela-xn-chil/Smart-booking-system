@@ -1,4 +1,6 @@
+// src/components/AddService.jsx
 import React, { useState } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 const AddService = () => {
   const [formData, setFormData] = useState({
@@ -15,45 +17,50 @@ const AddService = () => {
     setFormData({...formData, [e.target.name]: e.target.value});
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setMessage('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage('');
 
-  // Convert numeric fields
-  const payload = {
-    ...formData,
-    price: parseFloat(formData.price),
-    availableSlots: parseInt(formData.availableSlots),
-  };
+    // Convert numeric fields
+    const payload = {
+      ...formData,
+      price: parseFloat(formData.price),
+      availableSlots: parseInt(formData.availableSlots),
+    };
 
-  try {
-    const res = await fetch('https://smart-booking-system-backend.onrender.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      setMessage('Service added successfully!');
-      setFormData({
-        name: '',
-        description: '',
-        category: '',
-        availableSlots: ''
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(API_ENDPOINTS.SERVICES, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
       });
-    } else {
-      setMessage(data.error || 'Error adding service');
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage('Service added successfully!');
+        setFormData({
+          name: '',
+          description: '',
+          category: '',
+          price: '',
+          availableSlots: ''
+        });
+      } else {
+        setMessage(data.message || data.error || 'Error adding service');
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage('Network error. Please try again.');
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error(err);
-    setMessage('Network error. Please try again.');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="card">
@@ -102,6 +109,22 @@ const handleSubmit = async (e) => {
               value={formData.category}
               onChange={handleChange}
               className="form-input"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="price">Price</label>
+            <input
+              id="price"
+              name="price"
+              type="number"
+              step="0.01"
+              placeholder="Enter price"
+              value={formData.price}
+              onChange={handleChange}
+              className="form-input"
+              min="0"
               required
             />
           </div>

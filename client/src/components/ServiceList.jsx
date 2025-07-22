@@ -1,4 +1,6 @@
+// src/components/ServiceList.jsx
 import React, { useEffect, useState } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 const ServiceList = () => {
   const [services, setServices] = useState([]);
@@ -6,14 +8,19 @@ const ServiceList = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('https://smart-booking-system-backend.onrender.com')
-      .then(res => res.json())
+    fetch(API_ENDPOINTS.SERVICES)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
         setServices(data);
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
+        console.error('Error fetching services:', err);
         setError('Failed to load services');
         setLoading(false);
       });
@@ -55,14 +62,14 @@ const ServiceList = () => {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <h3 style={{ margin: 0, color: '#333', fontSize: '1.3rem' }}>{service.name}</h3>
                 <span style={{ 
-                  background: '#28a745', 
+                  background: service.price ? '#28a745' : '#6c757d', 
                   color: 'white', 
                   padding: '0.25rem 0.75rem', 
                   borderRadius: '20px',
                   fontSize: '0.9rem',
                   fontWeight: 'bold'
                 }}>
-                  Space Available: {service.price}
+                  {service.price ? `$${service.price}` : 'Price TBD'}
                 </span>
               </div>
               

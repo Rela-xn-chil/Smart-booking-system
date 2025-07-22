@@ -1,4 +1,6 @@
+// src/components/BookingList.jsx
 import React, { useEffect, useState } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 function BookingList() {
   const [bookings, setBookings] = useState([]);
@@ -6,8 +8,20 @@ function BookingList() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('https://smart-booking-system-backend.onrender.com')
-      .then((res) => res.json())
+    const token = localStorage.getItem('token');
+    
+    fetch(API_ENDPOINTS.BOOKINGS, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         setBookings(data);
         setLoading(false);
@@ -73,7 +87,8 @@ function BookingList() {
                   display: 'flex', 
                   alignItems: 'center', 
                   gap: '1rem',
-                  marginBottom: '0.5rem'
+                  marginBottom: '0.5rem',
+                  flexWrap: 'wrap'
                 }}>
                   <span style={{ 
                     background: '#667eea', 
@@ -98,6 +113,19 @@ function BookingList() {
                       {booking.Service.category}
                     </span>
                   )}
+
+                  {booking.Service?.price && (
+                    <span style={{ 
+                      background: '#ffc107', 
+                      color: '#212529', 
+                      padding: '0.25rem 0.75rem', 
+                      borderRadius: '15px',
+                      fontSize: '0.8rem',
+                      fontWeight: '500'
+                    }}>
+                      ${booking.Service.price}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -108,7 +136,8 @@ function BookingList() {
                 color: '#666',
                 fontSize: '0.95rem',
                 paddingTop: '1rem',
-                borderTop: '1px solid #eee'
+                borderTop: '1px solid #eee',
+                flexWrap: 'wrap'
               }}>
                 <span>
                   <strong>📅 Date:</strong> {new Date(booking.date).toLocaleDateString()}

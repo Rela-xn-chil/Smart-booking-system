@@ -1,4 +1,6 @@
+// src/components/BookService.jsx
 import React, { useState, useEffect } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 const BookService = () => {
   const [formData, setFormData] = useState({
@@ -18,10 +20,16 @@ const BookService = () => {
     }
 
     // Fetch available services
-    fetch('https://smart-booking-system-backend.onrender.com')
-      .then(res => res.json())
+    fetch(API_ENDPOINTS.SERVICES)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch services');
+        return res.json();
+      })
       .then(data => setServices(data))
-      .catch(err => console.error('Error fetching services:', err));
+      .catch(err => {
+        console.error('Error fetching services:', err);
+        setMessage('Failed to load services');
+      });
   }, []);
 
   const handleChange = (e) => {
@@ -34,12 +42,17 @@ const BookService = () => {
     setMessage('');
 
     try {
-      const res = await fetch('https://smart-booking-system-backend.onrender.com', {
+      const token = localStorage.getItem('token');
+      const res = await fetch(API_ENDPOINTS.BOOKINGS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          serviceId: parseInt(formData.serviceId),
+          date: formData.date
+        }),
       });
 
       const data = await res.json();
@@ -47,8 +60,14 @@ const BookService = () => {
       if (res.ok) {
         setMessage('Booking successful!');
         setFormData(prev => ({ ...prev, serviceId: '', date: '' }));
+        
+        // Refresh services to update available slots
+        fetch(API_ENDPOINTS.SERVICES)
+          .then(res => res.json())
+          .then(data => setServices(data))
+          .catch(console.error);
       } else {
-        setMessage(data.error || 'Failed to book service');
+        setMessage(data.message || data.error || 'Failed to book service');
       }
     } catch (error) {
       console.error(error);
@@ -81,8 +100,13 @@ const BookService = () => {
             >
               <option value="">Choose a service...</option>
               {services.map(service => (
-                <option key={service.id} value={service.id}>
+                <option 
+                  key={service.id} 
+                  value={service.id}
+                  disabled={service.availableSlots <= 0}
+                >
                   {service.name} ({service.availableSlots} slots available)
+                  {service.availableSlots <= 0 ? ' - FULLY BOOKED' : ''}
                 </option>
               ))}
             </select>
@@ -98,8 +122,9 @@ const BookService = () => {
             }}>
               <h4 style={{ margin: '0 0 0.5rem 0', color: '#333' }}>Service Details</h4>
               <p style={{ margin: '0 0 0.5rem 0', color: '#666' }}>{selectedService.description}</p>
-              <div style={{ display: 'flex', gap: '1rem', fontSize: '0.9rem' }}>
+              <div style={{ display: 'flex', gap: '1rem', fontSize: '0.9rem', flexWrap: 'wrap' }}>
                 <span><strong>Category:</strong> {selectedService.category}</span>
+                <span><strong>Price:</strong> ${selectedService.price}</span>
                 <span><strong>Available Slots:</strong> {selectedService.availableSlots}</span>
               </div>
             </div>
@@ -114,6 +139,7 @@ const BookService = () => {
               value={formData.date}
               onChange={handleChange}
               className="form-input"
+              min={new Date().toISOString().slice(0, 16)} // Prevent past dates
               required
             />
           </div>
@@ -121,7 +147,7 @@ const BookService = () => {
           <button 
             type="submit" 
             className="btn"
-            disabled={loading || !formData.serviceId}
+            disabled={loading || !formData.serviceId || (selectedService && selectedService.availableSlots <= 0)}
           >
             {loading ? 'Booking...' : 'Book Service'}
           </button>

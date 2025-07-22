@@ -9,18 +9,34 @@ function AddBooking() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Fetch users
-    fetch('https://smart-booking-system-backend.onrender.com')
-      .then(res => res.json())
-      .then(data => setUsers(data))
-      .catch(err => console.error('Error fetching users:', err));
+  const API_BASE_URL = 'https://smart-booking-system-backend.onrender.com';
 
-    // Fetch services
-    fetch('https://smart-booking-system-backend.onrender.com')
-      .then(res => res.json())
-      .then(data => setServices(data))
-      .catch(err => console.error('Error fetching services:', err));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch users
+        const usersResponse = await fetch(`${API_BASE_URL}/api/users`);
+        if (usersResponse.ok) {
+          const usersData = await usersResponse.json();
+          setUsers(usersData);
+        } else {
+          console.error('Error fetching users:', usersResponse.statusText);
+        }
+
+        // Fetch services
+        const servicesResponse = await fetch(`${API_BASE_URL}/api/services`);
+        if (servicesResponse.ok) {
+          const servicesData = await servicesResponse.json();
+          setServices(servicesData);
+        } else {
+          console.error('Error fetching services:', servicesResponse.statusText);
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -29,10 +45,24 @@ function AddBooking() {
     setMessage('');
 
     try {
-      const res = await fetch('https://smart-booking-system-backend.onrender.com', {
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+
+      // Add authorization header if token exists
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`${API_BASE_URL}/api/bookings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, serviceId, date })
+        headers,
+        body: JSON.stringify({ 
+          userId: parseInt(userId), 
+          serviceId: parseInt(serviceId), 
+          date 
+        })
       });
 
       const data = await res.json();
@@ -42,11 +72,18 @@ function AddBooking() {
         setUserId('');
         setServiceId('');
         setDate('');
+        
+        // Refresh services to update available slots
+        const servicesResponse = await fetch(`${API_BASE_URL}/api/services`);
+        if (servicesResponse.ok) {
+          const servicesData = await servicesResponse.json();
+          setServices(servicesData);
+        }
       } else {
-        setMessage(data.error || 'Failed to create booking');
+        setMessage(data.error || data.message || 'Failed to create booking');
       }
     } catch (err) {
-      console.error(err);
+      console.error('Network error:', err);
       setMessage('Network error. Please try again.');
     } finally {
       setLoading(false);
@@ -92,7 +129,7 @@ function AddBooking() {
               <option value="">Choose a service...</option>
               {services.map(service => (
                 <option key={service.id} value={service.id}>
-                  {service.name} -({service.availableSlots} slots available)
+                  {service.name} - ({service.availableSlots || 0} slots available)
                 </option>
               ))}
             </select>
@@ -106,6 +143,7 @@ function AddBooking() {
               value={date}
               onChange={(e) => setDate(e.target.value)}
               className="form-input"
+              min={new Date().toISOString().slice(0, 16)}
               required
             />
           </div>
