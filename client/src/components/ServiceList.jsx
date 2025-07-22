@@ -69,7 +69,7 @@ const ServiceList = () => {
                   fontSize: '0.9rem',
                   fontWeight: 'bold'
                 }}>
-                  {service.price ?'${service.price}':'Price TBD'}
+                  {service.price ? service.price : 'Price TBD'}
                 </span>
               </div>
               
