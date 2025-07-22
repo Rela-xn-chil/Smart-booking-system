@@ -33,7 +33,8 @@ function Login({ onLogin }) {
       if (response.ok) {
         // Store both token and userId
         localStorage.setItem('token', data.token);
-        localStorage.setItem('userId', data.user.id);
+        // localStorage.setItem('userId', data.user.id);
+        localStorage.setItem('userId', data.userId);
         console.log('✅ Login successful');
         
         setMessage('Login successful! Redirecting...');
