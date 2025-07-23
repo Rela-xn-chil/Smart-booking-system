@@ -9,6 +9,7 @@ import ServiceList from './components/ServiceList';
 import BookingList from './components/BookingList';
 import AddBooking from './components/AddBooking';
 import UserBookings from './components/UserBookings';
+import Recommendations from './components/Recommendations';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
@@ -64,6 +65,7 @@ function App() {
                 <Link to="/add-service">Add Service</Link>
                 <Link to="/bookings">All Bookings</Link>
                 <Link to="/add-booking">Add Booking</Link>
+                <Link to="/recommendations">Recommendations</Link>
                 <button onClick={handleLogout} className="logout-btn">Logout</button>
               </>
             )}
@@ -87,6 +89,7 @@ function App() {
               <Route path="/add-booking" element={<AddBooking />} />
               <Route path="/my-bookings" element={userId ? <UserBookings userId={userId} /> : <div className="loading">Loading user data...</div>} />
               <Route path="*" element={<Navigate to="/my-bookings" />} />
+              <Route path="/recommendations" element={<Recommendations />} />
             </>
           )}
         </Routes>
