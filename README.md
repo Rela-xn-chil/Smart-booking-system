@@ -7,6 +7,12 @@ BookWise is a full-stack web application built for Capaciti that allows users to
 🔗 Frontend: https://bookwise-15uq.onrender.com
 🔗 Backend API: https://smart-booking-system-backend.onrender.com
 
+## Example Login Details
+
+Email : admin@gmail.com
+
+Password : admin1
+
 ## Live Screenshot 
 
 <img width="1588" height="751" alt="Login page" src="https://github.com/user-attachments/assets/0b435071-120a-41f2-8190-d294837dd955" />
