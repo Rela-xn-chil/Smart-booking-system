@@ -42,7 +42,7 @@ Smart-booking-system/
 ## 🧑‍🏫 Team
 🔹 Developed by: RELAX-IN-CHILL
 
-🧑‍🤝‍🧑 Contributors: [Capaciti Team / Group members]
+🧑‍🤝‍🧑 Contributors: Keanu Moodley, Tiyani Nyathi
 
 ## 🌐 Deployment Notes
 Frontend deployed to Render as a Static Site
