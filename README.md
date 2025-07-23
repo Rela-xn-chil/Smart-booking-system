@@ -71,6 +71,8 @@ Book Services & View Your Bookings
 
 Responsive UI with form validation and feedback
 
+AI intergration for insights of future bookings
+
 
 ## 📜 License
 This project is licensed under the MIT License.
